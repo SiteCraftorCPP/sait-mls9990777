@@ -1,0 +1,10 @@
+# Original heavy PNG sources (web uses jpg/webp)
+images/*.PNG
+
+# OS / editor
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Cursor / local
+.cursor/
