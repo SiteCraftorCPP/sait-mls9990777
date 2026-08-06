@@ -1,6 +1,14 @@
 # Original heavy PNG sources (web uses jpg/webp)
 images/*.PNG
 
+# Secrets
+.env
+
+# Python
+.venv/
+__pycache__/
+*.py[cod]
+
 # OS / editor
 .DS_Store
 Thumbs.db

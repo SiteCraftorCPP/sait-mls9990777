@@ -1,0 +1,16 @@
+[Unit]
+Description=Landing site mls9990777 with YooKassa payments
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=root
+WorkingDirectory=/var/www/sait-mls9990777
+EnvironmentFile=/var/www/sait-mls9990777/.env
+ExecStart=/var/www/sait-mls9990777/.venv/bin/python -m server.app
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target
