@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import logging
+import re
 from pathlib import Path
 
 import aiohttp
@@ -11,6 +12,7 @@ from server.yookassa_client import YooKassaClient
 
 ROOT_DIR = Path(__file__).resolve().parent.parent
 STATIC_DIRS = ("css", "js", "images")
+EMAIL_RE = re.compile(r"^[^@\s]+@[^@\s]+\.[^@\s]+$")
 
 
 def create_app(settings: Settings) -> web.Application:
@@ -19,8 +21,15 @@ def create_app(settings: Settings) -> web.Application:
 
     async def create_payment(request: web.Request) -> web.Response:
         try:
+            payload = await request.json()
+        except Exception:
+            payload = {}
+        email = str(payload.get("email") or "").strip()
+        if not EMAIL_RE.match(email):
+            return web.json_response({"error": "invalid_email"}, status=400)
+        try:
             async with aiohttp.ClientSession() as session:
-                confirmation_url = await yookassa.create_payment(session)
+                confirmation_url = await yookassa.create_payment(session, email)
             return web.json_response({"confirmation_url": confirmation_url})
         except Exception:
             logging.exception("create_payment failed")
@@ -30,7 +39,7 @@ def create_app(settings: Settings) -> web.Application:
             )
 
     async def payment_webhook(request: web.Request) -> web.Response:
-        if request.method == "GET":
+        if request.method in {"GET", "HEAD"}:
             return web.Response(text="ok")
         try:
             payload = await request.json()

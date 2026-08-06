@@ -19,9 +19,10 @@ class YooKassaClient:
         ).decode()
         self._auth_header = f"Basic {token}"
 
-    def _receipt(self) -> dict:
+    def _receipt(self, customer_email: str) -> dict:
         price = self.settings.course_price
         return {
+            "customer": {"email": customer_email},
             "tax_system_code": self.settings.tax_system_code,
             "items": [
                 {
@@ -35,7 +36,11 @@ class YooKassaClient:
             ],
         }
 
-    async def create_payment(self, session: aiohttp.ClientSession) -> str:
+    async def create_payment(
+        self,
+        session: aiohttp.ClientSession,
+        customer_email: str,
+    ) -> str:
         payload = {
             "amount": {"value": self.settings.course_price, "currency": "RUB"},
             "confirmation": {
@@ -44,7 +49,7 @@ class YooKassaClient:
             },
             "capture": True,
             "description": "Доступ к онлайн-курсу",
-            "receipt": self._receipt(),
+            "receipt": self._receipt(customer_email),
         }
         async with session.post(
             self.API_URL,

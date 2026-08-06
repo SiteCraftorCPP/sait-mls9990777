@@ -3,6 +3,21 @@
  */
 const PAYMENT_API = "/api/payments/create";
 const LESSONS_URL = "https://t.me/+JARHvPSqchhjZjBi";
+const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+function askCustomerEmail() {
+  const saved = localStorage.getItem("course_email");
+  if (saved && EMAIL_RE.test(saved)) {
+    return saved;
+  }
+  const email = prompt("Введите email для чека об оплате:");
+  if (!email || !EMAIL_RE.test(email.trim())) {
+    return null;
+  }
+  const normalized = email.trim();
+  localStorage.setItem("course_email", normalized);
+  return normalized;
+}
 
 (function () {
   const header = document.getElementById("site-header");
@@ -20,10 +35,18 @@ const LESSONS_URL = "https://t.me/+JARHvPSqchhjZjBi";
         return;
       }
       const label = el.textContent;
+      const email = askCustomerEmail();
+      if (!email) {
+        return;
+      }
       el.classList.add("is-loading");
       el.textContent = "Открываем оплату…";
       try {
-        const response = await fetch(PAYMENT_API, { method: "POST" });
+        const response = await fetch(PAYMENT_API, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email }),
+        });
         const data = await response.json();
         if (!response.ok || !data.confirmation_url) {
           throw new Error("payment_unavailable");
