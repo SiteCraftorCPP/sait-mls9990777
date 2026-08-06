@@ -24,8 +24,10 @@ python -m server.app
 ## VPS (отдельная папка, не бот)
 
 ```bash
-cd /var/www/sait-mls9990777
+cd /opt/projects/sait-mls9990777
 bash deploy/install-vps.sh
 ```
 
 Бот: `/var/www/tgbot-mls9990777` — не трогается.
+
+Домен: `https://jushvili.site` — nginx проксирует на порт `8090`.

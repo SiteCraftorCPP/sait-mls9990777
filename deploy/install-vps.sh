@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-APP_DIR="/var/www/sait-mls9990777"
+APP_DIR="/opt/projects/sait-mls9990777"
 REPO_URL="https://github.com/SiteCraftorCPP/sait-mls9990777.git"
 SERVICE_NAME="sait-mls9990777"
 

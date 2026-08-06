@@ -6,9 +6,9 @@ Wants=network-online.target
 [Service]
 Type=simple
 User=root
-WorkingDirectory=/var/www/sait-mls9990777
-EnvironmentFile=/var/www/sait-mls9990777/.env
-ExecStart=/var/www/sait-mls9990777/.venv/bin/python -m server.app
+WorkingDirectory=/opt/projects/sait-mls9990777
+EnvironmentFile=/opt/projects/sait-mls9990777/.env
+ExecStart=/opt/projects/sait-mls9990777/.venv/bin/python -m server.app
 Restart=on-failure
 RestartSec=5
 
