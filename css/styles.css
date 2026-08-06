@@ -543,65 +543,120 @@ p:last-child {
 .pay-modal {
   position: fixed;
   inset: 0;
-  z-index: 200;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 1.25rem;
-  opacity: 0;
-  visibility: hidden;
-  transition:
-    opacity 0.35s var(--ease),
-    visibility 0.35s var(--ease);
+  z-index: 10000;
+  display: none;
+  pointer-events: none;
 }
 
 .pay-modal.is-open {
-  opacity: 1;
-  visibility: visible;
-}
-
-.pay-modal[hidden] {
-  display: flex;
+  display: block;
+  pointer-events: auto;
 }
 
 .pay-modal__backdrop {
-  position: absolute;
+  position: fixed;
   inset: 0;
-  background: rgba(26, 26, 26, 0.45);
-  backdrop-filter: blur(6px);
+  background: rgba(26, 26, 26, 0.52);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  opacity: 0;
+  transition: opacity 0.35s var(--ease);
+}
+
+.pay-modal.is-open .pay-modal__backdrop {
+  opacity: 1;
 }
 
 .pay-modal__dialog {
-  position: relative;
-  width: min(100%, 26rem);
-  padding: 2rem 1.75rem 1.75rem;
-  background: var(--bg);
-  border: 1px solid var(--line);
-  box-shadow: 0 24px 64px rgba(26, 26, 26, 0.18);
-  transform: translateY(16px) scale(0.98);
-  transition: transform 0.35s var(--ease);
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  z-index: 1;
+  width: min(calc(100vw - 2.5rem), 30rem);
+  max-height: min(calc(100vh - 2.5rem), 90vh);
+  overflow: auto;
+  padding: 2.25rem 2rem 2rem;
+  background:
+    radial-gradient(ellipse 120% 80% at 10% -20%, rgba(209, 195, 171, 0.45), transparent 55%),
+    var(--bg);
+  border: 1px solid rgba(26, 26, 26, 0.14);
+  box-shadow:
+    0 32px 80px rgba(26, 26, 26, 0.28),
+    0 0 0 1px rgba(255, 255, 255, 0.35) inset;
+  text-align: left;
+  opacity: 0;
+  transform: translate(-50%, calc(-50% + 12px)) scale(0.97);
+  transition:
+    opacity 0.35s var(--ease),
+    transform 0.35s var(--ease);
 }
 
 .pay-modal.is-open .pay-modal__dialog {
-  transform: translateY(0) scale(1);
+  opacity: 1;
+  transform: translate(-50%, -50%) scale(1);
+}
+
+.pay-modal__close {
+  position: absolute;
+  top: 0.85rem;
+  right: 0.85rem;
+  width: 2.25rem;
+  height: 2.25rem;
+  border: 1px solid var(--line);
+  background: rgba(255, 255, 255, 0.35);
+  color: var(--ink-muted);
+  font-size: 1.35rem;
+  line-height: 1;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition:
+    color 0.2s var(--ease),
+    border-color 0.2s var(--ease),
+    background 0.2s var(--ease);
+}
+
+.pay-modal__close:hover {
+  color: var(--ink);
+  border-color: var(--accent-deep);
+  background: rgba(255, 255, 255, 0.65);
 }
 
 .pay-modal__ornament {
   width: 3rem;
   height: 1px;
   background: var(--accent-deep);
-  margin-bottom: 1.5rem;
+  margin-bottom: 1.25rem;
+}
+
+.pay-modal__dialog .eyebrow {
+  margin-bottom: 0.65rem;
 }
 
 .pay-modal__dialog h2 {
-  font-size: clamp(1.75rem, 4vw, 2.25rem);
+  font-size: clamp(1.85rem, 4vw, 2.35rem);
   margin-bottom: 0.75rem;
 }
 
 .pay-modal__text {
-  margin: 0 0 1.25rem;
+  margin: 0 0 1rem;
   color: var(--ink-muted);
   font-size: 0.98rem;
+  line-height: 1.55;
+}
+
+.pay-modal__price {
+  font-family: var(--font-display);
+  font-size: clamp(2rem, 5vw, 2.75rem);
+  font-weight: 500;
+  margin: 0 0 1.25rem;
+  color: var(--ink);
+}
+
+.pay-modal__price span {
+  font-size: 0.55em;
+  opacity: 0.75;
 }
 
 .pay-modal__field {
@@ -621,23 +676,31 @@ p:last-child {
 
 .pay-modal__input {
   width: 100%;
-  padding: 0.85rem 1rem;
-  border: 1px solid var(--line);
-  border-radius: 0;
-  background: rgba(255, 255, 255, 0.35);
+  padding: 0.95rem 1rem;
+  border: 1px solid rgba(26, 26, 26, 0.22);
+  background: rgba(255, 255, 255, 0.45);
   color: var(--ink);
   font: inherit;
-  transition: border-color 0.2s var(--ease), box-shadow 0.2s var(--ease);
+  transition:
+    border-color 0.2s var(--ease),
+    box-shadow 0.2s var(--ease),
+    background 0.2s var(--ease);
+}
+
+.pay-modal__input::placeholder {
+  color: rgba(74, 69, 64, 0.55);
 }
 
 .pay-modal__input:focus {
   outline: none;
   border-color: var(--accent-deep);
+  background: rgba(255, 255, 255, 0.72);
   box-shadow: 0 0 0 3px rgba(190, 171, 147, 0.35);
 }
 
 .pay-modal__input.is-invalid {
   border-color: var(--spark);
+  box-shadow: 0 0 0 3px rgba(185, 28, 28, 0.15);
 }
 
 .pay-modal__error {
@@ -650,15 +713,23 @@ p:last-child {
   display: flex;
   flex-direction: column;
   gap: 0.65rem;
-  margin-top: 1rem;
+  margin-top: 1.25rem;
 }
 
+.pay-modal__submit,
 .pay-modal__cancel {
-  justify-content: center;
+  width: 100%;
 }
 
 body.pay-modal-open {
   overflow: hidden;
+}
+
+@media (max-width: 480px) {
+  .pay-modal__dialog {
+    width: calc(100vw - 1.5rem);
+    padding: 2rem 1.35rem 1.5rem;
+  }
 }
 
 /* ===== Reveal motion ===== */

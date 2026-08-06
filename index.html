@@ -19,7 +19,7 @@
       href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Manrope:wght@400;500;600;700&display=swap"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href="css/styles.css" />
+    <link rel="stylesheet" href="css/styles.css?v=2" />
   </head>
   <body>
     <header class="site-header" id="site-header">
@@ -390,7 +390,7 @@
       </section>
     </main>
 
-    <div class="pay-modal" id="pay-modal" hidden aria-hidden="true">
+    <div class="pay-modal" id="pay-modal" aria-hidden="true">
       <div class="pay-modal__backdrop" data-pay-close tabindex="-1"></div>
       <div
         class="pay-modal__dialog"
@@ -398,13 +398,17 @@
         aria-modal="true"
         aria-labelledby="pay-modal-title"
       >
+        <button class="pay-modal__close" type="button" data-pay-close aria-label="Закрыть">
+          <span aria-hidden="true">×</span>
+        </button>
         <div class="pay-modal__ornament" aria-hidden="true"></div>
-        <p class="eyebrow">Оплата</p>
+        <p class="eyebrow">Оплата курса</p>
         <h2 id="pay-modal-title">Email для чека</h2>
         <p class="pay-modal__text">
-          Укажи email — на него придёт чек об оплате. После платежа откроется
-          доступ к урокам в Telegram.
+          Укажи email — на него придёт чек. После оплаты откроется закрытый
+          Telegram-канал с уроками.
         </p>
+        <p class="pay-modal__price">100&nbsp;<span>₽</span></p>
         <label class="pay-modal__field">
           <span class="pay-modal__label">Email</span>
           <input
@@ -431,6 +435,6 @@
       </div>
     </div>
 
-    <script src="js/main.js"></script>
+    <script src="js/main.js?v=2"></script>
   </body>
 </html>

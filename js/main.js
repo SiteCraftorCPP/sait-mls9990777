@@ -23,6 +23,10 @@ function openPayModal() {
     return Promise.resolve(null);
   }
 
+  if (modal.parentElement !== document.body) {
+    document.body.appendChild(modal);
+  }
+
   return new Promise((resolve) => {
     let settled = false;
 
@@ -33,13 +37,17 @@ function openPayModal() {
       settled = true;
       modal.classList.remove("is-open");
       document.body.classList.remove("pay-modal-open");
-      window.setTimeout(() => {
-        modal.hidden = true;
-        modal.setAttribute("aria-hidden", "true");
-      }, 320);
+      modal.setAttribute("aria-hidden", "true");
       document.removeEventListener("keydown", onKeyDown);
+      submit.removeEventListener("click", onSubmitClick);
+      input.removeEventListener("keydown", onInputKeyDown);
+      modal.querySelectorAll("[data-pay-close]").forEach((el) => {
+        el.removeEventListener("click", onCloseClick);
+      });
       resolve(value);
     };
+
+    const onCloseClick = () => finish(null);
 
     const showError = (visible) => {
       if (error) {
@@ -48,7 +56,7 @@ function openPayModal() {
       input.classList.toggle("is-invalid", visible);
     };
 
-    const submitEmail = () => {
+    const onSubmitClick = () => {
       const normalized = input.value.trim();
       if (!EMAIL_RE.test(normalized)) {
         showError(true);
@@ -60,6 +68,13 @@ function openPayModal() {
       finish(normalized);
     };
 
+    const onInputKeyDown = (event) => {
+      if (event.key === "Enter") {
+        event.preventDefault();
+        onSubmitClick();
+      }
+    };
+
     const onKeyDown = (event) => {
       if (event.key === "Escape") {
         finish(null);
@@ -67,33 +82,18 @@ function openPayModal() {
     };
 
     modal.querySelectorAll("[data-pay-close]").forEach((el) => {
-      el.addEventListener(
-        "click",
-        () => finish(null),
-        { once: true }
-      );
+      el.addEventListener("click", onCloseClick);
     });
-
-    submit.addEventListener("click", submitEmail, { once: true });
-    input.addEventListener(
-      "keydown",
-      (event) => {
-        if (event.key === "Enter") {
-          event.preventDefault();
-          submitEmail();
-        }
-      },
-      { once: true }
-    );
+    submit.addEventListener("click", onSubmitClick);
+    input.addEventListener("keydown", onInputKeyDown);
 
     input.value = getSavedEmail() || "";
     showError(false);
-    modal.hidden = false;
     modal.setAttribute("aria-hidden", "false");
     document.body.classList.add("pay-modal-open");
     requestAnimationFrame(() => modal.classList.add("is-open"));
     document.addEventListener("keydown", onKeyDown);
-    window.setTimeout(() => input.focus(), 80);
+    window.setTimeout(() => input.focus(), 120);
   });
 }
 
