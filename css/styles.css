@@ -539,6 +539,128 @@ p:last-child {
   margin: 0 auto 2rem;
 }
 
+/* ===== Payment modal ===== */
+.pay-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.25rem;
+  opacity: 0;
+  visibility: hidden;
+  transition:
+    opacity 0.35s var(--ease),
+    visibility 0.35s var(--ease);
+}
+
+.pay-modal.is-open {
+  opacity: 1;
+  visibility: visible;
+}
+
+.pay-modal[hidden] {
+  display: flex;
+}
+
+.pay-modal__backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(26, 26, 26, 0.45);
+  backdrop-filter: blur(6px);
+}
+
+.pay-modal__dialog {
+  position: relative;
+  width: min(100%, 26rem);
+  padding: 2rem 1.75rem 1.75rem;
+  background: var(--bg);
+  border: 1px solid var(--line);
+  box-shadow: 0 24px 64px rgba(26, 26, 26, 0.18);
+  transform: translateY(16px) scale(0.98);
+  transition: transform 0.35s var(--ease);
+}
+
+.pay-modal.is-open .pay-modal__dialog {
+  transform: translateY(0) scale(1);
+}
+
+.pay-modal__ornament {
+  width: 3rem;
+  height: 1px;
+  background: var(--accent-deep);
+  margin-bottom: 1.5rem;
+}
+
+.pay-modal__dialog h2 {
+  font-size: clamp(1.75rem, 4vw, 2.25rem);
+  margin-bottom: 0.75rem;
+}
+
+.pay-modal__text {
+  margin: 0 0 1.25rem;
+  color: var(--ink-muted);
+  font-size: 0.98rem;
+}
+
+.pay-modal__field {
+  display: block;
+  margin-bottom: 0.5rem;
+}
+
+.pay-modal__label {
+  display: block;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--accent-deep);
+  margin-bottom: 0.5rem;
+}
+
+.pay-modal__input {
+  width: 100%;
+  padding: 0.85rem 1rem;
+  border: 1px solid var(--line);
+  border-radius: 0;
+  background: rgba(255, 255, 255, 0.35);
+  color: var(--ink);
+  font: inherit;
+  transition: border-color 0.2s var(--ease), box-shadow 0.2s var(--ease);
+}
+
+.pay-modal__input:focus {
+  outline: none;
+  border-color: var(--accent-deep);
+  box-shadow: 0 0 0 3px rgba(190, 171, 147, 0.35);
+}
+
+.pay-modal__input.is-invalid {
+  border-color: var(--spark);
+}
+
+.pay-modal__error {
+  margin: 0 0 0.75rem;
+  font-size: 0.9rem;
+  color: var(--spark);
+}
+
+.pay-modal__actions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+  margin-top: 1rem;
+}
+
+.pay-modal__cancel {
+  justify-content: center;
+}
+
+body.pay-modal-open {
+  overflow: hidden;
+}
+
 /* ===== Reveal motion ===== */
 .reveal {
   opacity: 0;

@@ -351,7 +351,7 @@
               </p>
             </div>
             <div>
-              <p class="price">1&nbsp;990&nbsp;<span>₽</span></p>
+              <p class="price">100&nbsp;<span>₽</span></p>
               <a class="btn js-pay" href="#">Оплатить и начать</a>
               <p class="final-note">
                 Доступ открывается сразу. Уроки можно проходить в своём темпе и
@@ -389,6 +389,47 @@
         </div>
       </section>
     </main>
+
+    <div class="pay-modal" id="pay-modal" hidden aria-hidden="true">
+      <div class="pay-modal__backdrop" data-pay-close tabindex="-1"></div>
+      <div
+        class="pay-modal__dialog"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="pay-modal-title"
+      >
+        <div class="pay-modal__ornament" aria-hidden="true"></div>
+        <p class="eyebrow">Оплата</p>
+        <h2 id="pay-modal-title">Email для чека</h2>
+        <p class="pay-modal__text">
+          Укажи email — на него придёт чек об оплате. После платежа откроется
+          доступ к урокам в Telegram.
+        </p>
+        <label class="pay-modal__field">
+          <span class="pay-modal__label">Email</span>
+          <input
+            class="pay-modal__input"
+            id="pay-modal-email"
+            type="email"
+            name="email"
+            autocomplete="email"
+            placeholder="you@example.com"
+            required
+          />
+        </label>
+        <p class="pay-modal__error" id="pay-modal-error" hidden>
+          Введите корректный email
+        </p>
+        <div class="pay-modal__actions">
+          <button class="btn pay-modal__submit" type="button" id="pay-modal-submit">
+            Продолжить к оплате
+          </button>
+          <button class="btn btn--ghost pay-modal__cancel" type="button" data-pay-close>
+            Отмена
+          </button>
+        </div>
+      </div>
+    </div>
 
     <script src="js/main.js"></script>
   </body>

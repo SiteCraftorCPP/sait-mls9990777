@@ -5,18 +5,104 @@ const PAYMENT_API = "/api/payments/create";
 const LESSONS_URL = "https://t.me/+JARHvPSqchhjZjBi";
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-function askCustomerEmail() {
+function getSavedEmail() {
   const saved = localStorage.getItem("course_email");
   if (saved && EMAIL_RE.test(saved)) {
     return saved;
   }
-  const email = prompt("Введите email для чека об оплате:");
-  if (!email || !EMAIL_RE.test(email.trim())) {
-    return null;
+  return null;
+}
+
+function openPayModal() {
+  const modal = document.getElementById("pay-modal");
+  const input = document.getElementById("pay-modal-email");
+  const error = document.getElementById("pay-modal-error");
+  const submit = document.getElementById("pay-modal-submit");
+
+  if (!modal || !input || !submit) {
+    return Promise.resolve(null);
   }
-  const normalized = email.trim();
-  localStorage.setItem("course_email", normalized);
-  return normalized;
+
+  return new Promise((resolve) => {
+    let settled = false;
+
+    const finish = (value) => {
+      if (settled) {
+        return;
+      }
+      settled = true;
+      modal.classList.remove("is-open");
+      document.body.classList.remove("pay-modal-open");
+      window.setTimeout(() => {
+        modal.hidden = true;
+        modal.setAttribute("aria-hidden", "true");
+      }, 320);
+      document.removeEventListener("keydown", onKeyDown);
+      resolve(value);
+    };
+
+    const showError = (visible) => {
+      if (error) {
+        error.hidden = !visible;
+      }
+      input.classList.toggle("is-invalid", visible);
+    };
+
+    const submitEmail = () => {
+      const normalized = input.value.trim();
+      if (!EMAIL_RE.test(normalized)) {
+        showError(true);
+        input.focus();
+        return;
+      }
+      showError(false);
+      localStorage.setItem("course_email", normalized);
+      finish(normalized);
+    };
+
+    const onKeyDown = (event) => {
+      if (event.key === "Escape") {
+        finish(null);
+      }
+    };
+
+    modal.querySelectorAll("[data-pay-close]").forEach((el) => {
+      el.addEventListener(
+        "click",
+        () => finish(null),
+        { once: true }
+      );
+    });
+
+    submit.addEventListener("click", submitEmail, { once: true });
+    input.addEventListener(
+      "keydown",
+      (event) => {
+        if (event.key === "Enter") {
+          event.preventDefault();
+          submitEmail();
+        }
+      },
+      { once: true }
+    );
+
+    input.value = getSavedEmail() || "";
+    showError(false);
+    modal.hidden = false;
+    modal.setAttribute("aria-hidden", "false");
+    document.body.classList.add("pay-modal-open");
+    requestAnimationFrame(() => modal.classList.add("is-open"));
+    document.addEventListener("keydown", onKeyDown);
+    window.setTimeout(() => input.focus(), 80);
+  });
+}
+
+function askCustomerEmail() {
+  const saved = getSavedEmail();
+  if (saved) {
+    return Promise.resolve(saved);
+  }
+  return openPayModal();
 }
 
 (function () {
@@ -25,6 +111,8 @@ function askCustomerEmail() {
 
   document.querySelectorAll(".js-lessons").forEach((el) => {
     el.setAttribute("href", LESSONS_URL);
+    el.setAttribute("target", "_blank");
+    el.setAttribute("rel", "noopener noreferrer");
   });
 
   document.querySelectorAll(".js-pay").forEach((el) => {
@@ -35,7 +123,7 @@ function askCustomerEmail() {
         return;
       }
       const label = el.textContent;
-      const email = askCustomerEmail();
+      const email = await askCustomerEmail();
       if (!email) {
         return;
       }
