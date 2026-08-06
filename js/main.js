@@ -98,10 +98,6 @@ function openPayModal() {
 }
 
 function askCustomerEmail() {
-  const saved = getSavedEmail();
-  if (saved) {
-    return Promise.resolve(saved);
-  }
   return openPayModal();
 }
 
