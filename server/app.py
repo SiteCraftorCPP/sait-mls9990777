@@ -10,6 +10,7 @@ from server.config import Settings
 from server.yookassa_client import YooKassaClient
 
 ROOT_DIR = Path(__file__).resolve().parent.parent
+STATIC_DIRS = ("css", "js", "images")
 
 
 def create_app(settings: Settings) -> web.Application:
@@ -29,6 +30,8 @@ def create_app(settings: Settings) -> web.Application:
             )
 
     async def payment_webhook(request: web.Request) -> web.Response:
+        if request.method == "GET":
+            return web.Response(text="ok")
         try:
             payload = await request.json()
         except Exception:
@@ -41,9 +44,37 @@ def create_app(settings: Settings) -> web.Application:
         return web.json_response({"status": "ok"})
 
     app.router.add_post("/api/payments/create", create_payment)
-    app.router.add_post("/api/payments/webhook", payment_webhook)
+    app.router.add_route("*", "/api/payments/webhook", payment_webhook)
     app.router.add_get("/api/health", health)
-    app.router.add_static("/", ROOT_DIR, show_index=True, name="static")
+
+    # Статика только для публичных файлов — без листинга корня.
+    for folder in STATIC_DIRS:
+        path = ROOT_DIR / folder
+        if path.is_dir():
+            app.router.add_static(f"/{folder}", path, show_index=False)
+
+    static_files = [
+        "index.html",
+        "success.html",
+        "favicon.ico",
+        "favicon.svg",
+        "favicon-16x16.png",
+        "favicon-32x32.png",
+        "favicon-512x512.png",
+        "apple-touch-icon.png",
+    ]
+    for name in static_files:
+        file_path = ROOT_DIR / name
+        if not file_path.is_file():
+            continue
+
+        async def file_handler(_: web.Request, path: Path = file_path) -> web.FileResponse:
+            return web.FileResponse(path)
+
+        if name == "index.html":
+            app.router.add_get("/", file_handler)
+        app.router.add_get(f"/{name}", file_handler)
+
     return app
 
 
