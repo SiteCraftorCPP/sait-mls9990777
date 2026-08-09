@@ -2,7 +2,7 @@
  * Оплата через ЮKassa API на этом же сервере.
  */
 const PAYMENT_API = "/api/payments/create";
-const LESSONS_URL = window.CHANNEL_URL || "https://t.me/+JARHvPSqchhjZjBi";
+const LESSONS_URL = window.CHANNEL_URL || "https://t.me/+0tTS-z-oXqo3NWIy";
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 function getSavedEmail() {

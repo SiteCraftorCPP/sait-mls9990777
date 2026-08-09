@@ -40,7 +40,7 @@ class Settings:
             vat_code=int(os.getenv("YOOKASSA_VAT_CODE", "1") or "1"),
             course_channel_url=os.getenv(
                 "COURSE_CHANNEL_URL",
-                "https://t.me/+JARHvPSqchhjZjBi",
+                "https://t.me/+0tTS-z-oXqo3NWIy",
             ).strip(),
             app_host=os.getenv("APP_HOST", "127.0.0.1").strip(),
             app_port=int(os.getenv("APP_PORT", "8090")),
